@@ -76,3 +76,25 @@ button{
     letter-spacing: 0.2em;
     border-radius: 5px;
 }
+
+@media screen and (max-width:660px) {
+    .sub-div{
+        width: calc(70vw);
+    }
+    
+}
+
+@media screen and (max-width:350px) {
+    .sub-div{
+        width: calc(90vw);
+    }
+
+    .sub-div h3{
+        font-size: 18px;
+    }
+
+    a{
+        font-size: 12px;
+    }
+    
+}
