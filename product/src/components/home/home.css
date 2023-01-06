@@ -314,7 +314,7 @@ body{
   background-color: white;
   top: 0;
   padding-top: 10px;
-  border-right: 1px solid black;
+  border-right: 1px solid rgba(0, 0, 0, 0.26);
   height: 100%;
 }
 
@@ -339,22 +339,75 @@ body{
 
 
 
-@media screen and (max-width:680px)  {
+@media screen and (max-width:800px)  {
   .input-div{
-    width: calc(80vw);
+    width: 70%;
+    margin-left: 20%;
+   
+  }
+
+  .posts{
+    width: 70%;
+    margin-left: 20%;
   }
 
   
 }
 
-@media screen and (max-width:420px)  {
+@media screen and (max-width:500px)  {
   .input-div{
-    width: calc(95vw);
+    width: 85%;
+    margin-left:12%;
   }
 
-  .btn{
-    width: 53%;
+  .posts{
+    margin-left: 12%;
+    width: 85%;
   }
+
+  .leftPannel img{
+    width: 25px;
+    height: 25px;
+  }
+
 
   
 }
+
+@media screen and (max-width:400px)  {
+
+  .posts{
+    width: 85%;
+  }
+  .info-div p{
+    font-size: 15px;
+  }
+  .text > p{
+    font-size: 13px;
+  }
+
+  .date{
+    font-size: 10px !important;
+  }
+}
+
+@media screen and (max-width:330px)  {
+
+  .posts{
+    width: 85%;
+  }
+  .info-div p{
+    font-size: 15px;
+  }
+  .text > p{
+    font-size: 13px;
+  }
+
+  .date{
+    display: none;
+    
+  }
+}
+
+
+
