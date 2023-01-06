@@ -152,3 +152,16 @@
     }
     
   }
+
+  @media screen and (max-width:500px) {
+    .nav-bar{
+        width: 100%;
+    }
+
+
+    .coverPhoto{
+        width: 100%;
+        height: calc(30vh);
+    }
+    
+  }
