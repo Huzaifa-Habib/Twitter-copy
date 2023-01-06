@@ -14,7 +14,7 @@ if (window.location.href.split(":")[0] === "http") {
 }
 
 else{
-  baseUrl = "https://wild-ruby-oyster-cap.cyclic.app"
+  baseUrl = "https://lazy-pear-caterpillar-slip.cyclic.app"
 }
 
 

@@ -23,6 +23,9 @@ function App() {
       baseUrl = "http://localhost:3000";
       
     }
+    else{
+      baseUrl = "https://lazy-pear-caterpillar-slip.cyclic.app"
+    }
   
 
     const getProfile = async () => {
