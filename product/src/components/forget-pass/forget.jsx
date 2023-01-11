@@ -53,6 +53,7 @@ function ForgetPass() {
 
         .then((response) => {
           console.log(response.data.message);
+          navigate("/")
 
         }, (error) => {
           console.log(error);    

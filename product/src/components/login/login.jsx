@@ -74,7 +74,7 @@ function Login() {
 
     return (
 
-        <div className='main-div'>
+        <div className='mainn-div'>
           <div className="alerts-div" id="alert">
             <div className="error-div">
               <p id="error"></p>
