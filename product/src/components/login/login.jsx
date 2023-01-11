@@ -98,7 +98,8 @@ function Login() {
                         }}/>
                     <button type="submit">Login</button>
                 </form>
-                <a href="/signup">Didn't have an account?Register.</a>
+                <a href="/signup">Didn't have an account?Register.</a> <br />
+                <a href="/forget-password">Forget Password?</a>
                 
                 
 

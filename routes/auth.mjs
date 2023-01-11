@@ -1,17 +1,24 @@
 import express from 'express'
-import {userModel} from './dbmodels.mjs'
+import {userModel,otpModel} from './dbmodels.mjs'
 import {
     stringToHash,
     varifyHash,
 } from "bcrypt-inzi"
 import jwt from "jsonwebtoken"
-const SECRET = process.env.SECRET || "mySecret"
+import { nanoid, customAlphabet } from 'nanoid'
+import moment from 'moment';
+import sgMail from "@sendgrid/mail"
 
+
+const SECRET = process.env.SECRET || "mySecret"
 const router = express.Router()
+const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY ||"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"
+// const API_KEY = "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"
+sgMail.setApiKey(SENDGRID_API_KEY)
 
 router.post("/signup", (req, res) => {
 
-    let body = req.body.toLowerCase();
+    let body = req.body;
 
     if (!body.firstName
         || !body.lastName
@@ -161,6 +168,84 @@ router.get("/logout", (req, res) => {
     });
 
     res.send({ message: "Logout successful" });
+
+})
+
+
+router.post('/forget-password', async (req, res) => {
+    try {
+
+        let body = req.body;
+        body.email = body.email.toLowerCase();
+
+        if (!body.email) { // null check - undefined, "", 0 , false, null , NaN
+            res.status(400).send(
+                `required fields missing, request example: 
+                {
+                    "email": "abc@abc.com",
+                }`
+            );
+            return;
+        }
+
+        // check if user exist
+        const user = await userModel.findOne(
+            { email: body.email },
+            "firstName lastName email",
+        ).exec()
+
+        if (!user) throw new Error("User not found")
+
+        const nanoid = customAlphabet('1234567890', 5)
+        const OTP = nanoid();
+        const otpHash = await stringToHash(OTP)
+
+        console.log("OTP: ", OTP);
+        console.log("otpHash: ", otpHash);
+
+        otpModel.create({
+            otp: otpHash,
+            email: body.email, // malik@sysborg.com
+        });
+
+        // TODO: send otp via email // postMark sendGrid 
+        const msg = {
+            to: body.email, // Change to your recipient
+            from: 'cocobutter128@gmail.com', // Change to your verified sender
+            subject: 'Verify your OTP',
+            text: OTP,
+            html: `<strong>${OTP}</strong>`,
+          }
+          sgMail
+            .send(msg)
+            .then(() => {
+              console.log('Email sent')
+              res.send({
+                message: "OTP sent success",
+            });
+
+         
+            })
+            .catch((error) => {
+              console.error(error)
+            })
+        
+        
+        
+      
+
+     
+       
+        return;
+
+    } catch (error) {
+        console.log("error: ", error);
+        res.status(500).send({
+            message: error.message
+        })
+    }
+
+
 
 })
 

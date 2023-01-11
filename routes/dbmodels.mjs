@@ -26,6 +26,15 @@ const userSchema = new mongoose.Schema({
 });
 export const userModel = mongoose.model('Users', userSchema);
 
+const otpSchema = new mongoose.Schema({
+    otp: String,
+    email: String,
+    isUsed: { type: Boolean, default: false },
+    createdOn: { type: Date, default: Date.now },
+});
+export const otpModel = mongoose.model('Otps', otpSchema);
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////mongodb connected disconnected events///////////////////////////////////////////////

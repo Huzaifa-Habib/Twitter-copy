@@ -2,30 +2,15 @@ import './home.css';
 import { useState,useEffect } from 'react';
 import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
-import edit from "../../assets/pencil.png";
-import deletes from "../../assets/delete.png";
 import {useRef,useContext} from 'react';
 import {useNavigate} from "react-router-dom"
 import { GlobalContext } from '../../context/context';
-import logout from  "../../assets/logout.png"
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {v4} from "uuid"
-
-
-
-
-
-
-
-
-
 
 
 
@@ -76,9 +61,6 @@ function Home() {
   }
   if (isSpinner === false) {
     document.querySelector(".spinner-div").style.display = "none"
-
-
-    
   }
 
 
@@ -274,8 +256,7 @@ function Home() {
       <p><a href="/"><img src="https://img.icons8.com/fluency/512/twitter.png" alt="twitter logo" height="40" width="40" /></a> </p>
       <p><a href="/profile"><img src="https://img.icons8.com/material-rounded/512/gender-neutral-user.png" alt="profile" title='profile' height="40" width="40" /></a></p> 
       <p><img src={state?.user?.profileImage} alt='account' height="40" width="40" onClick={logoutHandler}/></p> 
-
-
+      <p><a href="update-password"><img src="https://img.icons8.com/ios-glyphs/512/approve-and-update.png" alt='account' height="40" width="40"/></a></p> 
       </div>
 
     </div>

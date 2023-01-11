@@ -10,6 +10,8 @@ import { GlobalContext } from './context/context';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Spinner from 'react-bootstrap/Spinner';
 import Profile from './components/profile/profile';
+import UpdatePassword from './components/update-pass/update';
+import ForgetPass from './components/forget-pass/forget';
 
 axios.defaults.withCredentials = true
 
@@ -97,6 +99,9 @@ function App() {
               <Route path="/login" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/Profile" element={<Profile />} />
+              <Route path="/update-password" element={<UpdatePassword />} />
+
+
 
 
             </Routes>   
@@ -110,6 +115,7 @@ function App() {
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
+              <Route path="/forget-password" element={<ForgetPass />} />
               <Route path="*" element={<Login/>}/>
 
 
