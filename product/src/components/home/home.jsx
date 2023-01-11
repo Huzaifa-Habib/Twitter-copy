@@ -14,6 +14,7 @@ import {v4} from "uuid"
 
 
 
+
 let baseUrl = ""
 if (window.location.href.split(":")[0] === "http") {
   baseUrl = "http://localhost:3000";
@@ -255,8 +256,11 @@ function Home() {
       <div className='icons'>
       <p><a href="/"><img src="https://img.icons8.com/fluency/512/twitter.png" alt="twitter logo" height="40" width="40" /></a> </p>
       <p><a href="/profile"><img src="https://img.icons8.com/material-rounded/512/gender-neutral-user.png" alt="profile" title='profile' height="40" width="40" /></a></p> 
-      <p><img src={state?.user?.profileImage} alt='account' height="40" width="40" onClick={logoutHandler}/></p> 
-      <p><a href="update-password"><img src="https://img.icons8.com/ios-glyphs/512/approve-and-update.png" alt='account' height="40" width="40"/></a></p> 
+      <p><img src={state?.user?.profileImage} alt='account' height="40" width="40" onClick={logoutHandler} title = "logout"/></p> 
+      <p><a href="update-password"><img src="https://img.icons8.com/ios-glyphs/512/approve-and-update.png" alt='account' height="40" width="40" /></a></p> 
+      {/* <div className='dropdown-div'>
+        <p>ads</p>
+      </div> */}
       </div>
 
     </div>
