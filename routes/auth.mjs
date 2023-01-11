@@ -203,11 +203,7 @@ router.post('/forget-password', async (req, res) => {
         console.log("OTP: ", OTP);
         console.log("otpHash: ", otpHash);
 
-        otpModel.create({
-            otp: otpHash,
-            email: body.email, // malik@sysborg.com
-        });
-
+       
         // TODO: send otp via email // postMark sendGrid 
         const msg = {
             to: body.email, // Change to your recipient
@@ -223,8 +219,10 @@ router.post('/forget-password', async (req, res) => {
               res.send({
                 message: "OTP sent success",
             });
-
-         
+            otpModel.create({
+                otp: otpHash,
+                email: body.email, 
+            });
             })
             .catch((error) => {
               console.error(error)
