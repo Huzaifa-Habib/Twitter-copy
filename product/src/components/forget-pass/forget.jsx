@@ -1,5 +1,7 @@
 import axios from "axios"
 import {useState,useContext,useRef} from 'react';
+import {useNavigate} from "react-router-dom"
+
 import "./forget.css"
 
 
@@ -21,6 +23,8 @@ function ForgetPass() {
     const [isOtpSent, setIsOtpSent] = useState(false)
     const [otp, setOtp] = useState(null)
     const [newPass, setNewPass] = useState(null)
+    let navigate = useNavigate();
+
 
 
 
@@ -49,6 +53,7 @@ function ForgetPass() {
 
         .then((response) => {
           console.log(response.data.message);
+
         }, (error) => {
           console.log(error);    
         });
@@ -60,7 +65,7 @@ function ForgetPass() {
       
         <div className="main-div">
           
-         
+         <h3>Reset Your Password</h3>
 
           {(isOtpSent == false)?
           <div>
