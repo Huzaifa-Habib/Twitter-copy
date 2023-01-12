@@ -1,5 +1,5 @@
 import express from 'express'
-import {userModel,otpModel} from './dbmodels.mjs'
+import {userModel,otpModel,otpModelViaSms} from './dbmodels.mjs'
 import {
     stringToHash,
     varifyHash,
@@ -7,17 +7,16 @@ import {
 import jwt from "jsonwebtoken"
 import { nanoid, customAlphabet } from 'nanoid'
 import moment from 'moment';
-import sgMail from "@sendgrid/mail"
-import postmark from "postmark"
+// import sgMail from "@sendgrid/mail"
+// import postmark from "postmark"
 import Mailjet from "node-mailjet"
 
 const SECRET = process.env.SECRET || "mySecret"
 const router = express.Router()
-const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY ||"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"
+// const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY ||"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"
 // const API_KEY = "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"
-sgMail.setApiKey(SENDGRID_API_KEY)
-const MJ_APIKEY_PUBLIC = "54c01c68b8569bb96670e48ce47cd866"
-const MJ_APIKEY_PRIVAT = "a4cbb09573f67cd7155f77fdd5e7e6f2"
+// sgMail.setApiKey(SENDGRID_API_KEY)
+const MJ_API_TOKEN = process.env.MJ_API_TOKEN || "b34352494fa04346a919d7fcd7419e9e"
 let mailjet = new Mailjet({
     apiKey: process.env.MJ_APIKEY_PUBLIC || '54c01c68b8569bb96670e48ce47cd866',
     apiSecret: process.env.MJ_APIKEY_PRIVATE || 'a4cbb09573f67cd7155f77fdd5e7e6f2'
@@ -309,6 +308,85 @@ router.post('/forget-password', async (req, res) => {
 
 
 })
+router.post('/forget-password-via-sms', async (req, res) => {
+    try {
+
+        let body = req.body;
+        body.email = body.email.toLowerCase();
+        
+
+        if (!body.email || !body.number) { // null check - undefined, "", 0 , false, null , NaN
+            res.status(400).send(
+                `required fields missing, request example: 
+                {
+                    "email": "abc@abc.com",
+                    "number":"0000000000"
+                }`
+            );
+            return;
+        }
+
+        // check if user exist
+        const user = await userModel.findOne(
+            { email: body.email },
+            "firstName lastName email",
+        ).exec()
+
+        if (!user) throw new Error("User not found")
+
+        const nanoid = customAlphabet('1234567890', 5)
+        const OTP = nanoid();
+        const otpHash = await stringToHash(OTP)
+
+        console.log("OTP: ", OTP);
+        console.log("otpHash: ", otpHash);
+
+        otpModelViaSms.create({
+            otp: otpHash,
+            email: body.email, 
+            number:body.number
+        });
+
+    
+         // TODO: send otp via sms // malijet
+//          const mailjet = Mailjet.smsConnect("b34352494fa04346a919d7fcd7419e9e", {
+//             config: {
+//               version: 'v4'
+//             }
+//           });
+        
+//           const request = mailjet
+//           .post('sms-send')
+//           .request({
+//             Text: `Hey${user.firstName, user.lastName}! Please verify your OTP`,
+//             To: body.number,
+//             From: "Twitter Admin"
+//           })
+  
+//   request
+//           .then((result) => {
+//             console.log(result.body)
+//             res.send({
+//                 message: "OTP sent success"
+//              });
+//           })
+//           .catch((err) => {
+//             console.log(err.statusCode)
+//           })
+
+    
+        return;
+
+    } catch (error) {
+        console.log("error: ", error);
+        res.status(500).send({
+            message: error.message
+        })
+    }
+
+
+})
+
 
 router.post('/forget-password-2', async (req, res) => {
     try {

@@ -1,8 +1,7 @@
 import axios from "axios"
 import {useState,useContext,useRef} from 'react';
 import {useNavigate} from "react-router-dom"
-
-import "./forget.css"
+import "./sms.css"
 
 
 
@@ -18,24 +17,30 @@ else{
 }
 
 
-function ForgetPass() {
+function ForgetPassWithSms() {
     const [verifyEmail, setVerifyEmail] = useState(null)
     const [isOtpSent, setIsOtpSent] = useState(false)
     const [otp, setOtp] = useState(null)
     const [newPass, setNewPass] = useState(null)
+    const [number, setNumber] = useState(null)
+
+
     let navigate = useNavigate();
 
 
 
 
-    const OtpRequestHandler = (()=>{
-        axios.post(`${baseUrl}/api/v1/forget-password`, {
+    const OtpRequestHandlerViaSms = (()=>{
+        axios.post(`${baseUrl}/api/v1/forget-password-via-sms`, {
             email:verifyEmail,
+            number:Number(number)
+            
           },{ withCredentials: true })
 
           .then((response) => {
             console.log(response.data.message);
             setIsOtpSent(true)
+            
           }, (error) => {
             console.log(error);    
           });
@@ -72,10 +77,14 @@ function ForgetPass() {
           <div>
             <input type="email" placeholder="Enter Email" onChange={(e) =>{
                 setVerifyEmail(e.target.value)
-             }}/>
+            }}/>
 
-             <button onClick={OtpRequestHandler}>Send OTP</button>
-             <a href="forget-pass-with-sms" style={{display:"none"}}>Send SMS?</a>
+            <input type="number" placeholder="Enter Mobile Number" onChange={(e) =>{
+                setNumber(e.target.value)
+            }}/>
+
+             <button onClick={OtpRequestHandlerViaSms}>Send OTP via SMS</button>
+             <a href="forget-password">Send via Email?</a>
 
           </div>
     
@@ -104,4 +113,4 @@ function ForgetPass() {
 
 }
 
-export default ForgetPass
+export default ForgetPassWithSms

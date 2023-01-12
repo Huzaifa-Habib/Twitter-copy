@@ -41,7 +41,6 @@ function Home() {
 
   const handleClose = () => setShow1(false);
   const [loadTweet, setLoadTweet] = useState(false)
-
   const [isSpinner, setIsSpinner] = useState(null)
   const firstRef = useRef(null);
   const secondRef = useRef(null);

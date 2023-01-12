@@ -3,7 +3,6 @@ import {Route,Routes,Link,Navigate} from "react-router-dom"
 import Home from "./components/home/home"
 import Login from "./components/login/login"
 import Signup from "./components/signup/signup"
-import ContextProvider from "./context/context"
 import {useState,useEffect,useContext} from "react"
 import axios from 'axios';
 import { GlobalContext } from './context/context';
@@ -12,6 +11,8 @@ import Spinner from 'react-bootstrap/Spinner';
 import Profile from './components/profile/profile';
 import UpdatePassword from './components/update-pass/update';
 import ForgetPass from './components/forget-pass/forget';
+import ForgetPassWithSms from './components/forget-pass-with-sms/sms';
+
 
 axios.defaults.withCredentials = true
 
@@ -92,6 +93,22 @@ function App() {
 
   return (
     <div>
+       {(state.isLogin == false)?
+          <nav className='nav'>
+            <img src="https://img.icons8.com/fluency/512/twitter.png" alt="" height="40" width="40" />
+
+            <div className='right-side'>
+              <a href="/">Login</a>
+              <a href="/signup">Sign Up</a>
+
+            </div>
+             
+
+          </nav>
+         :
+         null
+        }  
+
          {
          (state?.isLogin === true) ?
             <Routes>
@@ -104,19 +121,23 @@ function App() {
 
 
 
+
             </Routes>   
           :
             null
         } 
 
 
-        {     
+        {    
          (state.isLogin === false) ?
+
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/signup" element={<Signup />} />
               <Route path="/forget-password" element={<ForgetPass />} />
               <Route path="*" element={<Login/>}/>
+              <Route path="/forget-pass-with-sms" element={<ForgetPassWithSms />} />
+
 
 
 
@@ -140,7 +161,9 @@ function App() {
            
           :
             null
-         }   
+         } 
+
+        
 
 
 

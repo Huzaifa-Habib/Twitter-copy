@@ -34,6 +34,15 @@ const otpSchema = new mongoose.Schema({
 });
 export const otpModel = mongoose.model('Otps', otpSchema);
 
+const otpSchemaViaSms = new mongoose.Schema({
+    otp: String,
+    email: String,
+    number:Number,
+    isUsed: { type: Boolean, default: false },
+    createdOn: { type: Date, default: Date.now },
+});
+export const otpModelViaSms = mongoose.model('Otps-with-SMS', otpSchemaViaSms);
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 

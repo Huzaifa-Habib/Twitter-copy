@@ -112,7 +112,7 @@ function Signup() {
 
             </div>
 
-            <div className='sub-div'>
+            <div className='subb-div'>
                 <h3>Register Yourself</h3>
                 <form onSubmit={signUpHandler}>
                     <div className="name-div">
