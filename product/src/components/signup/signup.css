@@ -76,6 +76,39 @@ button{
     letter-spacing: 0.2em;
     border-radius: 5px;
 }
+.nav{
+    width: 100% ;
+    background-color: #171717;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: 60px;
+    padding-top: 10px;
+  
+    
+  }
+  
+  .nav img{
+    margin-left: 10px;
+  }
+  
+  .right-side{
+    padding-right: 20px;
+    padding-top: 10px;
+  
+  }
+  
+  .right-side a{
+    margin-left: 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-bottom: 4px solid dodgerblue;
+  }
+  
+  .right-side a:hover{
+    color: white;
+  }
 
 @media screen and (max-width:660px) {
     .sub-div{

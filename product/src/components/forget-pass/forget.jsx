@@ -64,7 +64,20 @@ function ForgetPass() {
 
     return(
       
-        <div className="main-div">
+      
+        <div className="mainn-div">
+           <nav className='nav'>
+                <img src="https://img.icons8.com/fluency/512/twitter.png" alt="" height="40" width="40" />
+
+                <div className='right-side'>
+                <a href="/">Login</a>
+                <a href="/signup">Sign Up</a>
+
+                </div>     
+            </nav>
+          <div className="sub-div">
+
+
           
          <h3>Reset Your Password</h3>
 
@@ -97,6 +110,7 @@ function ForgetPass() {
           </div>
           }
            
+           </div>
 
         </div>
      

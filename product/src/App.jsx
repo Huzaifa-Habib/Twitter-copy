@@ -93,21 +93,11 @@ function App() {
 
   return (
     <div>
-       {(state.isLogin == false)?
-          <nav className='nav'>
-            <img src="https://img.icons8.com/fluency/512/twitter.png" alt="" height="40" width="40" />
+       {/* {(state.isLogin == false)?
 
-            <div className='right-side'>
-              <a href="/">Login</a>
-              <a href="/signup">Sign Up</a>
-
-            </div>
-             
-
-          </nav>
          :
          null
-        }  
+        }   */}
 
          {
          (state?.isLogin === true) ?
