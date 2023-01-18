@@ -64,7 +64,7 @@ router.post("/signup", (req, res) => {
                         firstName: body.firstName,
                         lastName: body.lastName,
                         email: body.email,
-                        profileImage:body.profileImage,
+                        profileImage:body?.profileImage,
                         password: hashString
                     },
                         (err, result) => {
@@ -86,6 +86,8 @@ router.post("/signup", (req, res) => {
         }
     })
 });
+
+
 
 router.post("/login", (req, res) => {
 
@@ -130,7 +132,7 @@ router.post("/login", (req, res) => {
                             res.cookie('Token', token, {
                                 maxAge: 86_400_000,
                                 httpOnly: true,
-                                sameSite:'none',
+                                sameSite:"none",
                                 secure:true,
                                 
                             });

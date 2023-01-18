@@ -110,6 +110,18 @@ button{
     color: white;
   }
 
+  .profileImg{
+    position: relative;
+    top: 20px;
+    font-weight: bold;
+    font-size: 17px;
+  }
+
+  .profileImg sup{
+    color: gray;
+    padding-left: 2px;
+  }
+
 @media screen and (max-width:660px) {
     .sub-div{
         width: calc(70vw);

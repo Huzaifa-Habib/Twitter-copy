@@ -82,7 +82,8 @@ function Home() {
             image: url,
             profilePhoto:state.user.profileImage,
             userFirstName:state.user.firstName,
-            userLastName:state.user.lastName
+            userLastName:state.user.lastName,
+            email:state.user.email
           },{withCredentials: true})
   
             .then((response) => {
@@ -118,7 +119,9 @@ function Home() {
         text: tweetText,
         profilePhoto:state.user.profileImage,
         userFirstName:state.user.firstName,
-        userLastName:state.user.lastName
+        userLastName:state.user.lastName,
+        email:state.user.email
+
       },{withCredentials: true})
 
         .then((response) => {

@@ -25,6 +25,7 @@ router.post('/tweet', (req, res) => {
         profilePhoto:body.profilePhoto,
         userFirstName:body.userFirstName,
         userLastName:body.userLastName,
+        email:body.email,
         owner: new mongoose.Types.ObjectId(body.token._id)
     },
         (err, saved) => {

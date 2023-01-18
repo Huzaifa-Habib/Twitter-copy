@@ -10,7 +10,8 @@ let twitterSchema = new mongoose.Schema({
     ownerName:{ type: String },
     profilePhoto: { type: String },
     userFirstName: {type:String},
-    userLastName: {type:String}
+    userLastName: {type:String},
+    email:{type:String}
 
 });
 export const tweetModel = mongoose.model('Tweets', twitterSchema);
@@ -20,7 +21,8 @@ const userSchema = new mongoose.Schema({
     lastName: { type: String },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    profileImage:{type:String, required:true},
+    profileImage:{type:String},
+    coverPhoto:{type:String},
     createdOn: { type: Date, default: Date.now },
 
 });

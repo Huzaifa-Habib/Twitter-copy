@@ -17,6 +17,18 @@ import logout from  "../../assets/logout.png"
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {v4} from "uuid"
+import {AiOutlinePlus} from "react-icons/ai"
+import {BiUpload} from "react-icons/bi"
+import {BsFillCameraFill} from "react-icons/bs"
+import {AiFillDelete} from "react-icons/ai"
+
+
+
+
+
+
+
+
 
 
 
@@ -52,8 +64,16 @@ function Profile() {
   
   const [searchData,setSearchData] =useState ("") 
   const [show1, setShow1] = useState(false);
+  const [show2, setShow2] = useState(false);
+
 
   const handleClose = () => setShow1(false);
+  const handleClose1 = () => setShow2(false);
+  const handleShow = () => setShow2(true);
+  const handleClose2 = () => setShow2(false);
+
+
+
   const [loadTweet, setLoadTweet] = useState(false)
 
   const [isSpinner, setIsSpinner] = useState(null)
@@ -63,6 +83,10 @@ function Profile() {
   let navigate = useNavigate();
   let { state, dispatch } = useContext(GlobalContext);
   const [imageUpload,setImageUpload] =useState (null) 
+  const [imageCoverUpload,setImageCoverUpload] =useState (null) 
+  const [showDrpItems,setShowDrpItems] =useState (false) 
+
+
   console.log("State", state)
 
 
@@ -76,10 +100,11 @@ function Profile() {
   }
   if (isSpinner === false) {
     document.querySelector(".spinner-div").style.display = "none"
-
-
     
   }
+
+
+
 
 
 
@@ -232,6 +257,95 @@ function Profile() {
     
   }
 
+  const updateProfilePhotoHandler= () =>{
+    let imageRef = ref(storage,`profileImages/${imageUpload?.name + v4()}`);
+
+    uploadBytes(imageRef, imageUpload).then((snapshot) =>{
+      console.log("Firebase Storage",snapshot)
+
+      getDownloadURL(snapshot.ref)
+      .then((url) =>{
+        console.log("ImageURL", url)
+            axios.post(`${baseUrl}/api/v1/updateProfileImg`, {
+                profileImage:url
+            })
+
+            .then((response) => {
+                console.log(response);
+                setShow2(false)
+                window.location.reload()
+            }, (error) => {
+                console.log(error.message);
+            });
+
+        })
+        .catch((e) =>{
+            console.log("Image Url Error", e)
+    
+        })
+    
+    })
+    .catch((e) =>{
+      console.log("Storage Error", e)
+
+    })
+
+
+  }
+
+  const showDrpHandler = () => {
+    if(showDrpItems == true){
+      document.querySelector(".drp-items").style.display = "block"
+    }
+    
+    if(showDrpItems == false){
+      document.querySelector(".drp-items").style.display = "none"
+    }
+    if (showDrpItems == false){
+      setShowDrpItems(true)
+    }
+
+    else{
+      setShowDrpItems(false)
+    }
+
+  }
+
+  const uploadCoverImageHandler = () =>{
+    let imageRef = ref(storage,`profileImages/${imageCoverUpload?.name + v4()}`);
+
+    uploadBytes(imageRef, imageCoverUpload).then((snapshot) =>{
+      console.log("Firebase Storage",snapshot)
+
+      getDownloadURL(snapshot.ref)
+      .then((url) =>{
+        console.log("ImageURL", url)
+            axios.post(`${baseUrl}/api/v1/uploadCoverPhoto`, {
+              coverPhoto:url
+            })
+
+            .then((response) => {
+                console.log(response);
+                // window.location.reload()
+            }, (error) => {
+                console.log(error.message);
+            });
+
+        })
+        .catch((e) =>{
+            console.log("Image Url Error", e)
+    
+        })
+    
+    })
+    .catch((e) =>{
+      console.log("Storage Error", e)
+
+    })
+
+
+  }
+
   
 
 
@@ -270,13 +384,61 @@ function Profile() {
 
     <div className='profile-centre-div'> 
         <div className='profile-sec'>
-            <div className='coverPhoto'> </div>
+            <div className='coverPhoto'> 
+          
+               <label htmlFor="coverInput">
+                </label>
+
+                <input style={{display:"none"}} type="file" name='coverPic'  id='coverInput' onChange={(e) => {
+                  setImageCoverUpload(e.target.files[0])
+                }}/>
+                
+                <p style={{display:"none"}} className='cover-btn' onClick={showDrpHandler}> <BsFillCameraFill className='camera-icon'  />Edit Cover Photo</p>
+                  <div className='drp-items'>
+                     <label htmlFor="coverInput">
+                     <p onClick={uploadCoverImageHandler}><BiUpload className='upload-icon'/>Upload Photo</p>
+                    </label>
+
+                    <input style={{display:"none"}} type="file" name='coverPic' accept='image/jpg, image.jpeg'  id='coverInput' onChange={(e) => {
+                      setImageCoverUpload(e.target.files[0])
+                    }}/>
+                     <p><AiFillDelete className='upload-icon'/>Remove</p>
+                  </div>
+
+
+                  
+                  
+
+             
+            </div>
              
             <div className='profilePhoto'>
-                <img src={state.user.profileImage} alt="" height="150" width="150"/> 
+                <img src={state?.user?.profileImage} alt="profile Image" height="150" width="150"/> 
+                <img className='updatePhoto' onClick={handleShow} src="https://img.icons8.com/ios-filled/2x/compact-camera.png" alt="Upload Photo" title='Upload Photo' height="40" width="40"/>
+                <Modal show={show2} onHide={handleClose2} animation={false}>
+                  <Modal.Header closeButton>
+                    <Modal.Title>Update Profile Picture</Modal.Title>
+                  </Modal.Header>
+                  <Modal.Body className='modal-body'>
+                    <label htmlFor="imgInput">
+                      <p className='upload-btn'> <AiOutlinePlus className='plus-icon'/>Upload Photo</p>
+                    </label>
 
-                
+                    <input style={{display:"none"}} type="file" name='profilePic' accept='image/png, image/jpg, image.jpeg'  id='imgInput' onChange={(e) => {
+                      setImageUpload(e.target.files[0])
+                    }}/>
+                    {/* <span>{imageUpload?.name}</span> */}
+                       
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button variant="primary" onClick={updateProfilePhotoHandler}>
+                      Save Changes
+                    </Button>
+                  </Modal.Footer>
+                </Modal>
+
             </div>
+
 
             <div className='userDetails'>
                 <p>{state?.user?.firstName} {state?.user?.lastName}</p>
@@ -284,6 +446,8 @@ function Profile() {
                 <p><img src="https://img.icons8.com/material-sharp/2x/calendar--v2.png" alt="calender logo" height="20" width = "20" />
 
                 <span className='userDate'>Joined {state?.user?.createdOn.split('T')[0]}</span>
+                
+
 
                 </p>
             </div>
