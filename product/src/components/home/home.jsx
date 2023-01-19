@@ -11,6 +11,15 @@ import { GlobalContext } from '../../context/context';
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {v4} from "uuid"
+import {BiLogOut} from "react-icons/bi"
+import {FaUserAlt} from "react-icons/fa"
+import InfiniteScroll from 'react-infinite-scroller';
+
+
+
+
+
+
 
 
 
@@ -48,7 +57,7 @@ function Home() {
   let navigate = useNavigate();
   let { state, dispatch } = useContext(GlobalContext);
   const [imageUpload,setImageUpload] =useState (null) 
-  console.log("State", state)
+  const [eof, setEof] = useState(false)
 
 
 
@@ -152,15 +161,26 @@ function Home() {
 
   }
 
-  const allTweetsHandler=()=>{
-    axios.get(`${baseUrl}/api/v1/tweetFeed`,{withCredentials: true})
-    .then((response) => {
-      console.log(response);
-      setAllData(response.data.data)
- 
-    }, (error) => {
-      console.log(error);
-    });
+  const allTweetsHandler= async ()=>{
+    if (eof) return;
+        try {
+            const response = await axios.get(`${baseUrl}/api/v1/tweetFeed?page=${allData.length}`)
+
+            if (response.data.data.length === 0) setEof(true);
+
+
+setAllData(response.data.data)
+            // setAllData((prev) => {
+
+            //     // if (prev.length >= 5) {
+            //     //     prev = prev.slice(5)
+            //     // }
+            //     return [...prev, ...response.data.data]
+            // })
+
+        } catch (error) {
+            console.log("error in getting all tweets", error);
+        }
 
  
   }
@@ -217,17 +237,23 @@ function Home() {
 
   }
 
-  const logoutHandler = () =>{
+  const logoutHandler =  () =>{
     axios.get(`${baseUrl}/api/v1/logout`,{
       withCredentials: true
     })
 
     .then((response) => {
       console.log(response);
-      dispatch({
-        type: 'USER_LOGOUT',
-        payload: null
-    })
+      setIsSpinner(true)
+     setTimeout(() => {
+        setIsSpinner(false);
+        setLoadTweet(!loadTweet)
+        dispatch({
+          type: 'USER_LOGOUT',
+          payload: null
+      })
+    }, 2500);
+     
     }, (error) => {
       console.log(error);
     });
@@ -256,13 +282,9 @@ function Home() {
     <div className='leftPannel'>
 
       <div className='icons'>
-      <p><a href="/"><img src="https://img.icons8.com/fluency/512/twitter.png" alt="twitter logo" height="40" width="40" /></a> </p>
-      <p><a href="/profile"><img src="https://img.icons8.com/material-rounded/512/gender-neutral-user.png" alt="profile" title='profile' height="40" width="40" /></a></p> 
-      <p><img src={state?.user?.profileImage} alt='account' height="40" width="40" onClick={logoutHandler} title = "logout"/></p> 
-      <p><a href="update-password"><img src="https://img.icons8.com/ios-glyphs/512/approve-and-update.png" alt='account' height="40" width="40" /></a></p> 
-      {/* <div className='dropdown-div'>
-        <p>ads</p>
-      </div> */}
+      <p title='Home'><a href="/"><img src="https://img.icons8.com/fluency/512/twitter.png" alt="twitter logo" height="40" width="40"  /></a> </p>
+      <p><a href="/profile"><FaUserAlt style={{fontSize:"35px",cursor:"pointer",color:"#3f3f3f"}} title='Profile'></FaUserAlt></a> </p>
+      <p><BiLogOut onClick={logoutHandler} style={{fontSize:"35px",cursor:"pointer",color:"#3f3f33"}} title="Log Out"/></p>
       </div>
 
     </div>
@@ -314,10 +336,15 @@ function Home() {
         </form>
       </div>
 
-      <div className='display-div' id='display'>
-
-
-
+      <InfiniteScroll
+        pageStart={5}
+        loadMore={allTweetsHandler}
+        hasMore={!eof}
+        loader={<div className="loader">Loading ...</div>}
+        className='display-div'
+        id='display'
+      >
+    
         {
 
               (allData && allData?.length !== 0)?
@@ -363,19 +390,9 @@ function Home() {
 
                 :
                 null
-          
-                    
-
-        
-
-              
+               
         }
-
-
-      
-    
-
-      </div>
+      </InfiniteScroll>
 
 
       <div className='onSearchData'>

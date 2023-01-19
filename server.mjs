@@ -186,17 +186,14 @@ app.post("/api/v1/uploadCoverPhoto", async (req, res) =>{
             { _id: _id },
             "coverPhoto",
         ).exec()
-
-
         if (!user) throw new Error("User not found")
-        
+
         await userModel.updateOne({ _id: _id }, { coverPhoto: coverPhoto }).exec()
-    //    await userModel.({
-    //         coverPhoto:coverPhoto
-    //     })
+  
         res.send({
-            message: "Cover Photo changed success",
+            message: "cover image changed success",
         });
+      
         return;
 
     }
@@ -208,6 +205,84 @@ app.post("/api/v1/uploadCoverPhoto", async (req, res) =>{
 
 
 })
+
+app.put("/api/v1/deleteCoverPhoto", async (req, res) =>{
+    try{
+        const body = req.body;
+        const _id = req.body.token._id;
+
+        const user = await userModel.findOne(
+            { _id: _id },
+        ).exec()
+        if (!user){
+            throw new Error("User not found") 
+            
+
+        }
+        else{
+            let data = await userModel.findByIdAndUpdate(_id,
+                {
+                    coverPhoto: "",
+                  
+                },
+                { new: true }
+            ).exec();
+    
+            console.log('updated: ', data);
+    
+            res.send({
+                message: "cover image remove success",
+            });
+        }
+
+
+
+  
+        
+      
+        return;
+
+    }
+
+    catch (error) {
+        console.log("error: ", error);
+        res.status(500).send(error.message)
+    }
+
+
+})
+
+app.delete('/api/v1/deleteAccount/:deleteAccountEmail', (req, res) => {
+    const email = req.params.deleteAccountEmail
+    userModel.deleteOne({
+        email: email,
+        owner: new mongoose.Types.ObjectId(req.body.token._id)
+
+    }, (err, deletedData) => {
+        console.log("deleted: ", deletedData);
+        if (!err) {
+
+            if (deletedData.deletedCount !== 0) {
+                res.send({
+                    message: "Account has been deleted successfully",
+                })
+            } else {
+                res.status(404);
+                res.send({
+                    message: "No Account found with this email: " + email,
+                });
+            }
+        } else {
+            res.status(500).send({
+                message: "server error"
+            })
+        }
+    });
+  
+
+    
+})
+
 
 
 

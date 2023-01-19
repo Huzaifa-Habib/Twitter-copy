@@ -2,25 +2,25 @@ import './profile.css';
 import { useState,useEffect } from 'react';
 import axios from "axios"
 import 'bootstrap/dist/css/bootstrap.min.css';
-import Table from 'react-bootstrap/Table';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
 import Spinner from 'react-bootstrap/Spinner';
-import edit from "../../assets/pencil.png";
-import deletes from "../../assets/delete.png";
 import {useRef,useContext} from 'react';
 import {useNavigate} from "react-router-dom"
 import { GlobalContext } from '../../context/context';
-import logout from  "../../assets/logout.png"
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import {v4} from "uuid"
-import {AiOutlinePlus} from "react-icons/ai"
-import {BiUpload} from "react-icons/bi"
+import {AiOutlinePlus,AiFillDelete} from "react-icons/ai"
+import {BiUpload,BiLogOut} from "react-icons/bi"
 import {BsFillCameraFill} from "react-icons/bs"
-import {AiFillDelete} from "react-icons/ai"
+import Dropdown from 'react-bootstrap/Dropdown';
+import {GrUpdate} from "react-icons/gr"
+import {FaUserAlt} from "react-icons/fa"
+import Toast from 'react-bootstrap/Toast';
+import ToastContainer from 'react-bootstrap/ToastContainer';
+
+
 
 
 
@@ -65,29 +65,43 @@ function Profile() {
   const [searchData,setSearchData] =useState ("") 
   const [show1, setShow1] = useState(false);
   const [show2, setShow2] = useState(false);
+  const [show3, setShow3] = useState(false);
+  const [show4, setShow4] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+
+
+
+
 
 
   const handleClose = () => setShow1(false);
   const handleClose1 = () => setShow2(false);
   const handleShow = () => setShow2(true);
+  const handleShow4 = () => setShow4(true);
+
+ 
+
   const handleClose2 = () => setShow2(false);
+  const handleClose3 = () => setShow3(false);
+  const handleClose4 = () => setShow4(false);
+
+
 
 
 
   const [loadTweet, setLoadTweet] = useState(false)
 
   const [isSpinner, setIsSpinner] = useState(null)
-  const firstRef = useRef(null);
-  const secondRef = useRef(null);
-  const lastRef = useRef(null);
+  
+
   let navigate = useNavigate();
   let { state, dispatch } = useContext(GlobalContext);
   const [imageUpload,setImageUpload] =useState (null) 
   const [imageCoverUpload,setImageCoverUpload] =useState (null) 
   const [showDrpItems,setShowDrpItems] =useState (false) 
+  const [deleteAccountEmail, setDeleteAccountEmail] = useState(null)
 
-
-  console.log("State", state)
+  // console.log("State", state)
 
 
 
@@ -103,6 +117,19 @@ function Profile() {
     
   }
 
+  const handleShow1 = () => {
+    if(showDrpItems == true){
+      document.querySelector(".drp-items").style.display = "block"
+    }
+    
+    if(showDrpItems == false){
+      document.querySelector(".drp-items").style.display = "none"
+    }
+  
+  
+    setShowDrpItems(false)
+    setShow3(true)
+  };
 
 
 
@@ -207,36 +234,10 @@ function Profile() {
   }
 
 
-  let descEmptyError = document.querySelector(".descEmptyError")
-  let descError = document.querySelector(".descLengthError")
 
-  const descHandler = (e) =>{
-    if (e.target.value == "") {
-      descEmptyError.style.display = "block"
-      descError.style.display = "none"
 
-    }
 
-    else{
-      descEmptyError.style.display = "none"
-      descError.style.display = "none"
-    }
 
-  }
-
-  const descLengthError = (e) =>{
-    if (e?.target?.value?.length < 3) {
-      descError.style.display = "block"
-      descEmptyError.style.display = "none"
-
-    }
-
-    else{
-      descEmptyError.style.display = "none"
-      descError.style.display = "none"
-    }
-
-  }
 
   const logoutHandler = () =>{
     axios.get(`${baseUrl}/api/v1/logout`,{
@@ -245,10 +246,16 @@ function Profile() {
 
     .then((response) => {
       console.log(response);
-      dispatch({
-        type: 'USER_LOGOUT',
-        payload: null
-    })
+      setIsSpinner(true)
+      setTimeout(() => {
+        setIsSpinner(false);
+        dispatch({
+          type: 'USER_LOGOUT',
+          payload: null
+      })
+    }, 2500);
+      
+  
     }, (error) => {
       console.log(error);
     });
@@ -272,8 +279,14 @@ function Profile() {
 
             .then((response) => {
                 console.log(response);
-                setShow2(false)
-                window.location.reload()
+                setIsSpinner(true)
+                setTimeout(() => {
+                  setIsSpinner(false);
+                  setShow2(false)
+                  window.location.reload()
+              }, 2000);
+                
+                
             }, (error) => {
                 console.log(error.message);
             });
@@ -293,58 +306,102 @@ function Profile() {
 
   }
 
-  const showDrpHandler = () => {
-    if(showDrpItems == true){
-      document.querySelector(".drp-items").style.display = "block"
+
+
+  const uploadCoverImageHandler = () =>{
+  
+    if (imageCoverUpload != null) {}
+      let imageRef = ref(storage,`profileImages/${imageCoverUpload?.name + v4()}`);
+
+      uploadBytes(imageRef, imageCoverUpload).then((snapshot) =>{
+        console.log("Firebase Storage",snapshot)
+  
+        getDownloadURL(snapshot.ref)
+        .then((url) =>{
+          console.log("ImageURL", url)
+        
+              axios.post(`${baseUrl}/api/v1/uploadCoverPhoto`, {
+                coverPhoto:url
+              })
+  
+              .then((response) => {
+                  console.log(response);
+                  setIsSpinner(true)
+                  setTimeout(() => {
+                    setIsSpinner(false);
+                    window.location.reload()
+                }, 1500);
+              }, (error) => {
+                  console.log(error.message);
+              });
+  
+             })
+              .catch((e) =>{
+                  console.log("Image Url Error", e)
+          
+              })
+      
+      })
+      .catch((e) =>{
+        console.log("Storage Error", e)
+  
+      })
+
     }
+
+  const removeCover = () =>{
+      if(state.user.coverPhoto != null){
+
+        axios.put(`${baseUrl}/api/v1/deleteCoverPhoto`)
+        .then(response => {
+          console.log("response: ", response);
+          setIsSpinner(true)
+          setTimeout(() => {
+            setIsSpinner(false);
+            window.location.reload()
+        }, 2500);
+        })
     
-    if(showDrpItems == false){
-      document.querySelector(".drp-items").style.display = "none"
-    }
-    if (showDrpItems == false){
-      setShowDrpItems(true)
+        .catch(err => {
+            console.log("error: ", err);
+        })
+      }
+  }
+
+  const accountSuspensionHandler = (e) =>{
+    e.preventDefault()
+    console.log(deleteAccountEmail)
+    if (state.user.email == deleteAccountEmail){
+      axios.delete(`${baseUrl}/api/v1/deleteAccount/${deleteAccountEmail}`)
+      .then(response => {
+        console.log("response: ", response);
+        setIsSpinner(true)
+        setTimeout(() => {
+          setIsSpinner(false);
+          navigate("/signup")
+          
+      }, 2500);
+      })
+  
+      .catch(err => {
+          console.log("error: ", err);
+      })
+
     }
 
     else{
-      setShowDrpItems(false)
+      setShowToast(true)
+      
     }
 
-  }
-
-  const uploadCoverImageHandler = () =>{
-    let imageRef = ref(storage,`profileImages/${imageCoverUpload?.name + v4()}`);
-
-    uploadBytes(imageRef, imageCoverUpload).then((snapshot) =>{
-      console.log("Firebase Storage",snapshot)
-
-      getDownloadURL(snapshot.ref)
-      .then((url) =>{
-        console.log("ImageURL", url)
-            axios.post(`${baseUrl}/api/v1/uploadCoverPhoto`, {
-              coverPhoto:url
-            })
-
-            .then((response) => {
-                console.log(response);
-                // window.location.reload()
-            }, (error) => {
-                console.log(error.message);
-            });
-
-        })
-        .catch((e) =>{
-            console.log("Image Url Error", e)
-    
-        })
-    
-    })
-    .catch((e) =>{
-      console.log("Storage Error", e)
-
-    })
-
 
   }
+
+  
+
+  
+
+
 
   
 
@@ -369,13 +426,45 @@ function Profile() {
 
       <div className='icons'>
       <p><a href="/"><img src="https://img.icons8.com/fluency/512/twitter.png" alt="twitter logo" height="40" width="40" /></a> </p>
-      <p><a href="/profile"><img src="https://img.icons8.com/material-rounded/512/gender-neutral-user.png" alt="profile" title='profile' height="40" width="40" /></a></p> 
-      <p><img src={state?.user?.profileImage}  alt='account' height="40" width="40" onClick={logoutHandler} /></p> 
+      <p><a href="/profile"><FaUserAlt style={{fontSize:"35px",cursor:"pointer",color:"#3f3f3f"}} title='Profile'></FaUserAlt></a> </p>
+      <Dropdown>
+        <Dropdown.Toggle className='menuBtn' id="dropdown-button-dark-example1" variant="secondary">
+          <img src={state?.user?.profileImage} alt='account' height="40" width="40" title = "logout"/>
+        </Dropdown.Toggle>
 
+        <Dropdown.Menu >
+          <Dropdown.Item onClick={logoutHandler} style={{fontWeight:"bold"}} ><BiLogOut style={{marginRight:"10px",fontSize:"25px"}}/>Log Out</Dropdown.Item>
+          <Dropdown.Item style={{fontWeight:"bold"}} ><GrUpdate style={{marginRight:"10px",marginLeft:"3px",fontSize:"20px"}}/>Update Password</Dropdown.Item>
+          <Dropdown.Item onClick={handleShow4} style={{fontWeight:"bold"}} href="#/action-4"><AiFillDelete style={{marginRight:"10px",fontSize:"25px"}}/>Delete Account</Dropdown.Item>
+            <Modal show={show4} onHide={handleClose4}>
+              <Modal.Header closeButton>
+                <Modal.Title>Delete My Acconut</Modal.Title>
+              </Modal.Header>
+                <div>
+                  <form onSubmit={accountSuspensionHandler}>
+                    <input type="email" required placeholder='Enter your Acconut Email' onChange={(e) =>{
+                      setDeleteAccountEmail(e.target.value)
+
+                    }} />
+                    <button type='submit' style={{marginBottom:"20px"}}>
+                      Delete
+                    </button>
+                  </form>
+                </div>
+            </Modal>
+        </Dropdown.Menu>
+      </Dropdown>
 
       </div>
-
     </div>
+    <ToastContainer className="p-3" position="bottom-start">
+      <Toast onClose={() => setShowToast(false)} show={showToast}  delay={4000} autohide  >
+         
+          <Toast.Body style={{color:"red",fontWeight:"bold"}}>Your entered Email is not valid!</Toast.Body>
+      </Toast>
+    </ToastContainer>
+
+ 
 
     <nav className='nav-bar'>
         <h4>{state.user.firstName} {state.user.lastName}</h4>
@@ -384,25 +473,59 @@ function Profile() {
 
     <div className='profile-centre-div'> 
         <div className='profile-sec'>
-            <div className='coverPhoto'> 
-          
+            <div className='coverPhoto' style={{backgroundImage:`url(${state?.user?.coverPhoto})`,backgroundRepeat:"no-repeat",backgroundSize:"cover",imageRendering:"pixelated",backgroundPosition:"50% 50%"}}> 
                <label htmlFor="coverInput">
                 </label>
+                <Dropdown className='drp'>
+                  <Dropdown.Toggle className='cover-btn' id="dropdown-button-dark-example1" variant="secondary">
+                      <BsFillCameraFill className='camera-icon'  />Edit Cover Photo
 
-                <input style={{display:"none"}} type="file" name='coverPic'  id='coverInput' onChange={(e) => {
-                  setImageCoverUpload(e.target.files[0])
-                }}/>
-                
-                <p style={{display:"none"}} className='cover-btn' onClick={showDrpHandler}> <BsFillCameraFill className='camera-icon'  />Edit Cover Photo</p>
+                  </Dropdown.Toggle>
+
+                  <Dropdown.Menu variant="dark" className='menu'>
+                    <p onClick={handleShow1}><BiUpload className='upload-icon'/>Upload Photo</p>
+                      <Modal show={show3} onHide={handleClose3} animation={false}>
+                        <Modal.Header closeButton>
+                          <Modal.Title>Update Cover Photo</Modal.Title>
+                        </Modal.Header>
+
+                        <Modal.Body className='modal-body'>
+                          <label htmlFor="coverInput">
+                            <p className='upload-btn'> <AiOutlinePlus className='plus-icon'/>Upload Photo</p>
+                          </label>
+
+                          <input style={{display:"none"}}  type="file" name='coverPic' accept='image/jpg, image.jpeg'  id='coverInput' onChange={(e) => {
+                              setImageCoverUpload(e.target.files[0])
+                        
+                          }}/>
+                          {/* <span>{imageUpload?.name}</span> */}
+                            
+                        </Modal.Body>
+
+                        <Modal.Footer>
+                          <Button variant="primary" onClick={uploadCoverImageHandler} >
+                            Save Changes
+                          </Button>
+                        </Modal.Footer>
+
+                      </Modal>
+                      {(state.user.coverPhoto == "")?
+                          null
+
+                      :
+                      <p onClick={removeCover}><AiFillDelete className='upload-icon' />Remove</p>
+
+                      }
+                  </Dropdown.Menu>
+                </Dropdown>
+  
+      
                   <div className='drp-items'>
-                     <label htmlFor="coverInput">
-                     <p onClick={uploadCoverImageHandler}><BiUpload className='upload-icon'/>Upload Photo</p>
-                    </label>
+                
+                  
 
-                    <input style={{display:"none"}} type="file" name='coverPic' accept='image/jpg, image.jpeg'  id='coverInput' onChange={(e) => {
-                      setImageCoverUpload(e.target.files[0])
-                    }}/>
-                     <p><AiFillDelete className='upload-icon'/>Remove</p>
+                   
+                
                   </div>
 
 
@@ -444,7 +567,6 @@ function Profile() {
                 <p>{state?.user?.firstName} {state?.user?.lastName}</p>
                 <p>@{state?.user?.email}</p>
                 <p><img src="https://img.icons8.com/material-sharp/2x/calendar--v2.png" alt="calender logo" height="20" width = "20" />
-
                 <span className='userDate'>Joined {state?.user?.createdOn.split('T')[0]}</span>
                 
 
