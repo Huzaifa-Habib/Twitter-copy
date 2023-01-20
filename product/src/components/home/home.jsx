@@ -336,14 +336,15 @@ setAllData(response.data.data)
         </form>
       </div>
 
-      <InfiniteScroll
+      {/* <InfiniteScroll
         pageStart={5}
         loadMore={allTweetsHandler}
         hasMore={!eof}
         loader={<div className="loader">Loading ...</div>}
-        className='display-div'
-        id='display'
-      >
+      
+      > */}
+
+      <div className='display-div'id='display'>
     
         {
 
@@ -392,7 +393,8 @@ setAllData(response.data.data)
                 null
                
         }
-      </InfiniteScroll>
+      {/* </InfiniteScroll> */}
+      </div>
 
 
       <div className='onSearchData'>
