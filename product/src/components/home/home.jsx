@@ -166,7 +166,7 @@ function Home() {
         try {
             const response = await axios.get(`${baseUrl}/api/v1/tweetFeed?page=${allData.length}`)
 
-            if (response.data.data.length === 0) setEof(true);
+           
 
 
 setAllData(response.data.data)

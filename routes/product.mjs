@@ -83,7 +83,7 @@ router.get('/tweetFeed', (req, res) => {
         {
             sort: { "_id": -1 },
             limit: 50,
-            skip: page,
+            skip: 0,
             populate:
             {
                 path: "owner",
