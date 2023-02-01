@@ -355,6 +355,8 @@ setAllData(response.data.data)
                      { allData.map((eachData,i) => (  
                         <div className='posts' key={i}>
                           <div className='info-div'>
+                          {console.log(eachData)}
+
                          
                             <img src={(!eachData?.profilePhoto)?"https://img.icons8.com/material-sharp/256/user.png":eachData?.profilePhoto} alt="profilePic" width="50" height = "50" />
                             <p>{eachData?.userFirstName} {eachData.userLastName}</p>
