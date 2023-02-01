@@ -356,7 +356,7 @@ setAllData(response.data.data)
                         <div className='posts' key={i}>
                           <div className='info-div'>
                          
-                            <img src={eachData?.profilePhoto} alt="profilePic" width="50" height = "50" />
+                            <img src={(!eachData?.profilePhoto)?"https://img.icons8.com/material-sharp/256/user.png":eachData?.profilePhoto} alt="profilePic" width="50" height = "50" />
                             <p>{eachData?.userFirstName} {eachData.userLastName}</p>
                             <p className='date'>.{eachData?.createdOn.split('T')[0]}</p>                                       
                           </div>

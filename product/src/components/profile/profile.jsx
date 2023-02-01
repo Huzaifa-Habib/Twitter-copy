@@ -536,7 +536,7 @@ function Profile() {
             </div>
              
             <div className='profilePhoto'>
-                <img src={state?.user?.profileImage} alt="profile Image" height="150" width="150"/> 
+                <img src={(!state?.user?.profileImage)?"https://img.icons8.com/material-sharp/256/user.png":state?.user?.profileImage} alt="profile Image" height="150" width="150"/> 
                 <img className='updatePhoto' onClick={handleShow} src="https://img.icons8.com/ios-filled/2x/compact-camera.png" alt="Upload Photo" title='Upload Photo' height="40" width="40"/>
                 <Modal show={show2} onHide={handleClose2} animation={false}>
                   <Modal.Header closeButton>
@@ -590,7 +590,7 @@ function Profile() {
                      { allData.map((eachData,i) => (  
                         <div className='posts' key={i}>
                           <div className='info-div'>
-                            <img src={eachData?.profilePhoto} alt="profilePic" width="50" height = "50" />
+                            <img src={(!eachData?.profilePhoto)?"https://img.icons8.com/material-sharp/256/user.png":eachData?.profilePhoto} alt="profilePic" width="50" height = "50" />
                             <p>{eachData?.userFirstName} {eachData.userLastName}</p>
                             <p className='date'>.{eachData?.createdOn.split('T')[0]}</p>          
                             <div className='modifying-div'>
