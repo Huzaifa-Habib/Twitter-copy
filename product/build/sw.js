@@ -29,9 +29,13 @@ self.addEventListener('fetch', event => {
       if (cachedResponse !== undefined) {
           // Cache hit, return the resource
           return cachedResponse;
-      } else {
-        // Otherwise, go to the network
-          return fetch(event.request)
-      };
+      }
+      if (ENABLE_DYNAMIC_CACHING) {
+        const responseToCache = cachedResponse.clone();
+        const cache = await caches.open(DYNAMIC_CACHE)
+        await cache.put(event.request, response.clone());
+      }
+    
+      return cachedResponse;
   });
 });
