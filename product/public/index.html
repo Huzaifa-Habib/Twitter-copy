@@ -41,7 +41,7 @@
     -->
     <script>
       if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js?v2', {
+    navigator.serviceWorker.register('sw.js', {
         scope: '.' // <--- THIS BIT IS REQUIRED
     }).then(function(registration) {
         // Registration was successful
